@@ -5,10 +5,10 @@
 // ============================================================
 
 // --- DATABASE ---
-define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-define('DB_NAME', getenv('DB_NAME') ?: 'ntddlabz_lenacake');
-define('DB_USER', getenv('DB_USER') ?: 'ntddlabz_lenacake');
-define('DB_PASS', getenv('DB_PASS') !== false ? getenv('DB_PASS') : 'UksSWfFedaKXbz6LMK2e');
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'ntddlabz_lenacake');
+define('DB_USER', 'ntddlabz_lenacake');
+define('DB_PASS', 'UksSWfFedaKXbz6LMK2e');
 define('DB_CHARSET', 'utf8mb4');
 
 // --- ADMIN ---
