@@ -1,0 +1,32 @@
+# Bật Rewrite Engine
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Ngăn truy cập vào các file ẩn và thư mục nhạy cảm
+    RewriteRule ^includes/ - [F,L]
+    RewriteRule ^database/ - [F,L]
+    RewriteRule \.(sql|log|ini|sh|bak)$ - [F,L]
+</IfModule>
+
+# Tối ưu MIME Types và bảo mật cơ bản
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Tối ưu Cache cho ảnh và CSS/JS trên Hosting
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+</IfModule>
+
+# Tắt duyệt thư mục
+Options -Indexes
