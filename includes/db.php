@@ -18,7 +18,10 @@ function get_db(): PDO {
             $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
         } catch (PDOException $e) {
             http_response_code(500);
-            die(json_encode(['ok' => false, 'error' => 'Không thể kết nối cơ sở dữ liệu MySQL. Vui lòng bật MySQL trong bảng điều khiển XAMPP']));
+            die(json_encode([
+                'ok' => false, 
+                'error' => 'Lỗi kết nối MySQL: ' . $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE));
         }
     }
     return $pdo;
