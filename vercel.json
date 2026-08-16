@@ -2,12 +2,6 @@
   "functions": {
     "api/**/*.php": {
       "runtime": "vercel-php@0.7.2"
-    },
-    "admin/**/*.php": {
-      "runtime": "vercel-php@0.7.2"
-    },
-    "*.php": {
-      "runtime": "vercel-php@0.7.2"
     }
   },
   "routes": [
@@ -16,24 +10,32 @@
       "dest": "/assets/$1"
     },
     {
+      "src": "/admin/api/(.*)",
+      "dest": "/api/admin-$1"
+    },
+    {
       "src": "/admin/(.*)",
-      "dest": "/admin/$1"
+      "dest": "/api/admin-$1"
+    },
+    {
+      "src": "/admin",
+      "dest": "/api/admin-index.php"
+    },
+    {
+      "src": "/checkout",
+      "dest": "/api/checkout.php"
+    },
+    {
+      "src": "/order-success",
+      "dest": "/api/order-success.php"
     },
     {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },
     {
-      "src": "/checkout",
-      "dest": "/checkout.php"
-    },
-    {
-      "src": "/order-success",
-      "dest": "/order-success.php"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/$1"
+      "dest": "/api/index.php"
     }
   ]
 }
