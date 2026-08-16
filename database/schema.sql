@@ -3,9 +3,6 @@
 -- Import vào phpMyAdmin hoặc chạy: mysql -u root -p lena_bakery < schema.sql
 -- ============================================================
 
-CREATE DATABASE IF NOT EXISTS lena_bakery CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE lena_bakery;
-
 -- Bảng đơn hàng
 CREATE TABLE IF NOT EXISTS orders (
     id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
