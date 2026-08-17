@@ -64,7 +64,7 @@ if (!empty($_SESSION['admin_logged_in'])) {
 <body>
 <div class="login-box">
   <div class="login-logo">Lena<em>Bakery</em></div>
-  <div class="login-sub">🔑 Admin Dashboard</div>
+  <div class="login-sub">Admin Dashboard</div>
   <?php if ($error): ?>
   <div class="error-msg"><?= htmlspecialchars($error) ?></div>
   <?php endif; ?>

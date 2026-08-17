@@ -9,7 +9,7 @@
                 <div class="usp-list">
                     <div class="usp-item reveal">
                         <span class="num">01</span>
-                        <h3>Nguyên bản &amp; Tỉ mỉ 🥣</h3>
+                        <h3>Nguyên bản &amp; Tỉ mỉ</h3>
                         <div class="usp-desc">
                             <p>Tự tay Ánh chọn lọc và cân đong chính xác từng gram nguyên liệu.</p>
                             <p>Dùng 100% Mascarpone nguyên bản, tuyệt đối không pha độn whipping cream.</p>
@@ -19,7 +19,7 @@
 
                     <div class="usp-item reveal">
                         <span class="num">02</span>
-                        <h3>Tươi mới trao tay 🛵</h3>
+                        <h3>Tươi mới trao tay</h3>
                         <div class="usp-desc">
                             <p>Bánh không làm sẵn, chỉ bắt đầu trộn kem khi nhận được đơn của bạn.</p>
                             <p>Giữ trọn vẹn cốt bánh ẩm mịn và hương vị nguyên sơ nhất.</p>
@@ -29,7 +29,7 @@
 
                     <div class="usp-item reveal">
                         <span class="num">03</span>
-                        <h3>Ngọt thanh, không ngấy 🍃</h3>
+                        <h3>Ngọt thanh, không ngấy</h3>
                         <div class="usp-desc">
                             <p>Công thức độc quyền được tinh chỉnh êm ái, rất hợp với người sợ ngọt.</p>
                             <p>Vị cà phê đượm thơm hòa quyện cùng lớp kem béo nhẹ nhàng.</p>

@@ -22,8 +22,201 @@ $shipFeeJson  = SHIP_FEE;
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css" />
-<link rel="stylesheet" href="assets/css/checkout.css" />
+<link rel="stylesheet" href="assets/css/style.css?v=<?= filemtime(__DIR__ . '/assets/css/style.css') ?>" />
+<link rel="stylesheet" href="assets/css/checkout.css?v=<?= filemtime(__DIR__ . '/assets/css/checkout.css') ?>" />
+<style>
+/* === MOBILE LAYOUT FIX ===
+   Đảm bảo toàn bộ checkout hiển thị đúng trên mọi điện thoại.
+   Dùng !important để ép browser bỏ layout desktop.
+*/
+@media screen and (max-width: 900px) {
+
+  /* Body + html không được tràn ngang */
+  html, body {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Main container chiếm full width */
+  .co-main {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    padding-bottom: 130px !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+  }
+
+  /* Bỏ grid 2 cột, chuyển sang block đơn giản */
+  .co-panel,
+  .co-panel.active,
+  #step1, #step1.active,
+  #step2, #step2.active,
+  #step3, #step3.active {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    grid-template-columns: unset !important;
+    padding-top: 14px !important;
+  }
+
+  /* Cột trái chiếm toàn bộ */
+  .co-left {
+    width: 100% !important;
+    max-width: 100% !important;
+    float: none !important;
+    display: block !important;
+    overflow: visible !important;
+  }
+
+  /* Grid sản phẩm: 1 cột, 100% width — FIX CHÍNH */
+  #productGrid,
+  .product-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 14px !important;
+    margin: 0 0 20px 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    grid-template-columns: unset !important;
+  }
+
+  /* Thẻ sản phẩm full width */
+  .product-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+  }
+
+  /* Ảnh sản phẩm */
+  .product-img-wrap {
+    width: 100% !important;
+    height: 200px !important;
+    overflow: hidden !important;
+  }
+  .product-img-wrap img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+
+  /* Thông tin sản phẩm */
+  .product-info {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 14px 16px !important;
+  }
+
+  /* Tiêu đề trang */
+  .co-title {
+    font-size: 24px !important;
+    letter-spacing: -0.5px !important;
+    margin-bottom: 16px !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Sidebar giỏ hàng: ẩn ở bước 1, dùng floating bar */
+  #step1 .co-cart,
+  #step1 aside.co-cart {
+    display: none !important;
+  }
+
+  /* Sidebar ở bước 2 hiển thị bình thường */
+  #step2 aside.co-cart {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    position: static !important;
+    margin-top: 20px !important;
+  }
+
+  /* Sticky floating bar */
+  .co-mobile-bar {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1000 !important;
+    background: rgba(26,17,14,0.96) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 12px 18px calc(12px + env(safe-area-inset-bottom,0px)) !important;
+    transform: translateY(120%) !important;
+    transition: transform 0.35s cubic-bezier(0.2,0.9,0.3,1) !important;
+    box-shadow: 0 -6px 24px rgba(0,0,0,0.25) !important;
+  }
+  .co-mobile-bar.visible {
+    transform: translateY(0) !important;
+  }
+  .co-m-count {
+    font-size: 11px !important;
+    color: rgba(255,255,255,0.65) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    display: block !important;
+  }
+  .co-m-total {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #f0d080 !important;
+    display: block !important;
+    line-height: 1.1 !important;
+  }
+  .co-mobile-bar-btn {
+    background: linear-gradient(135deg,#8b3a2a,#b55a47) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 999px !important;
+    padding: 11px 22px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+  }
+
+  /* Form nhập thông tin: 1 cột */
+  .ship-method-cards,
+  .pay-method-tabs {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .form-row input[type=text],
+  .form-row input[type=tel],
+  .form-row textarea {
+    font-size: 16px !important; /* ngăn iOS tự zoom */
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Layout thanh toán 1 cột */
+  .payment-layout {
+    display: block !important;
+    width: 100% !important;
+  }
+  .qr-box, .cod-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin-bottom: 20px !important;
+  }
+  .qr-img-wrap {
+    width: 220px !important;
+    height: 220px !important;
+  }
+}
+</style>
 </head>
 <body class="checkout-page">
 
@@ -51,13 +244,20 @@ $shipFeeJson  = SHIP_FEE;
 
       <div class="product-grid" id="productGrid">
         <?php foreach ($products as $pid => $p): ?>
-        <div class="product-card" data-pid="<?= $pid ?>" data-price="<?= $p['price'] ?>">
-          <?php if ($p['badge']): ?>
+        <?php $isOut = !empty($p['is_out_of_stock']); ?>
+        <div class="product-card <?= $isOut ? 'is-out-of-stock' : '' ?>" data-pid="<?= $pid ?>" data-price="<?= $p['price'] ?>" data-outofstock="<?= $isOut ? '1' : '0' ?>" style="<?= $isOut ? 'opacity:0.75;background:#fcf8f8;' : '' ?>">
+          <?php if ($isOut): ?>
+          <span class="product-badge" style="background:#ef4444;color:#fff;">Tạm hết</span>
+          <?php elseif ($p['badge']): ?>
           <span class="product-badge"><?= $p['badge'] ?></span>
           <?php endif; ?>
-          <div class="product-img-wrap">
+
+          <!-- Ảnh vuông bên trái -->
+          <div class="product-img-wrap" style="<?= $isOut ? 'filter: grayscale(0.5);' : '' ?>">
             <img src="<?= htmlspecialchars($p['img']) ?>" alt="<?= htmlspecialchars($p['name']) ?>" loading="lazy" />
           </div>
+
+          <!-- Nội dung bên phải -->
           <div class="product-info">
             <div class="product-meta">
               <h3><?= htmlspecialchars($p['name']) ?></h3>
@@ -66,16 +266,17 @@ $shipFeeJson  = SHIP_FEE;
             <p class="product-desc"><?= htmlspecialchars($p['desc']) ?></p>
 
             <!-- Chọn vị -->
-            <div class="product-options">
+            <div class="product-options" style="<?= $isOut ? 'opacity:0.5;pointer-events:none;' : '' ?>">
               <label class="opt-label">Vị:</label>
               <div class="opt-chips">
-                <label class="chip"><input type="radio" name="flavor_<?= $pid ?>" value="cacao" checked /> Cacao</label>
-                <label class="chip"><input type="radio" name="flavor_<?= $pid ?>" value="matcha" /> Matcha</label>
+                <?php foreach (($p['flavors'] ?? ['cacao', 'matcha']) as $idx => $f): ?>
+                <label class="chip"><input type="radio" name="flavor_<?= $pid ?>" value="<?= htmlspecialchars($f) ?>" <?= $idx === 0 ? 'checked' : '' ?> /> <?= ucfirst(htmlspecialchars($f)) ?></label>
+                <?php endforeach; ?>
               </div>
             </div>
 
             <!-- Topping -->
-            <div class="product-options">
+            <div class="product-options" style="<?= $isOut ? 'opacity:0.5;pointer-events:none;' : '' ?>">
               <label class="opt-label">Topping:</label>
               <select class="topping-select" name="topping_<?= $pid ?>">
                 <?php foreach ($toppings as $tid => $t): ?>
@@ -84,14 +285,20 @@ $shipFeeJson  = SHIP_FEE;
               </select>
             </div>
 
-            <!-- Qty -->
+            <!-- Qty controls -->
             <div class="qty-row">
+              <?php if ($isOut): ?>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span class="badge" style="background:#fee2e2;color:#dc2626;font-size:12px;padding:4px 8px;border-radius:4px;font-weight:600;">Tạm hết hàng</span>
+              </div>
+              <?php else: ?>
               <div class="qty-control">
-                <button class="qty-btn" data-action="minus" data-pid="<?= $pid ?>">−</button>
+                <button class="qty-btn" data-action="minus" data-pid="<?= $pid ?>" aria-label="Giảm">−</button>
                 <span class="qty-val" id="qty_<?= $pid ?>">0</span>
-                <button class="qty-btn" data-action="plus" data-pid="<?= $pid ?>">+</button>
+                <button class="qty-btn" data-action="plus" data-pid="<?= $pid ?>" aria-label="Tăng">+</button>
               </div>
               <span class="qty-subtotal" id="sub_<?= $pid ?>"></span>
+              <?php endif; ?>
             </div>
           </div>
         </div>
@@ -104,7 +311,7 @@ $shipFeeJson  = SHIP_FEE;
       </div>
     </div>
 
-    <!-- Sidebar giỏ hàng -->
+    <!-- Sidebar giỏ hàng (Desktop) -->
     <aside class="co-cart" id="cartSidebar">
       <div class="cart-header">
         <span class="cart-title">🛒 Giỏ hàng</span>
@@ -120,6 +327,37 @@ $shipFeeJson  = SHIP_FEE;
         Tiếp tục → Thông tin giao hàng
       </button>
     </aside>
+
+    <!-- Mobile Sticky Cart Bar (chỉ hiện trên điện thoại khi có món) -->
+    <div class="co-mobile-bar" id="mobileCartBar">
+      <div class="co-mobile-bar-info" onclick="openCartSheet()" style="cursor:pointer;flex:1">
+        <span class="co-m-count" id="mCartCount">0 món đã chọn</span>
+        <span class="co-m-total" id="mCartTotal">0đ</span>
+      </div>
+      <button class="co-mobile-bar-btn" id="mCartNextBtn" disabled onclick="openCartSheet()">
+        Xem giỏ 🛒
+      </button>
+    </div>
+
+    <!-- Cart Bottom Sheet (overlay + sheet) -->
+    <div class="cart-sheet-overlay" id="cartSheetOverlay" onclick="closeCartSheet()"></div>
+    <div class="cart-sheet" id="cartSheet">
+      <div class="cart-sheet-handle"></div>
+      <div class="cart-sheet-header">
+        <span class="cart-sheet-title">🛒 Giỏ hàng của bạn</span>
+        <button class="cart-sheet-close" onclick="closeCartSheet()" aria-label="Đóng">✕</button>
+      </div>
+      <ul class="cart-sheet-list" id="cartSheetList"></ul>
+      <div class="cart-sheet-footer">
+        <div class="cart-sheet-total-row">
+          <span>Tạm tính</span>
+          <strong id="cartSheetSubtotal">0đ</strong>
+        </div>
+        <button class="cart-sheet-next-btn" id="cartSheetNextBtn" onclick="closeCartSheet(); goStep(2);">
+          Tiếp tục đặt hàng →
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- ===== BƯỚC 2: THÔNG TIN GIAO HÀNG ===== -->
@@ -146,7 +384,9 @@ $shipFeeJson  = SHIP_FEE;
           <div class="ship-method-cards">
             <label class="ship-card active" id="pickupCard">
               <input type="radio" name="shipping_method" value="pickup" checked />
-              <div class="ship-card-icon">🏪</div>
+              <div class="ship-card-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+              </div>
               <div>
                 <strong>Tự đến lấy (Pickup)</strong>
                 <small>Tại <?= SHOP_ADDRESS ?><br><span class="badge-free">Miễn phí ship</span></small>
@@ -154,10 +394,12 @@ $shipFeeJson  = SHIP_FEE;
             </label>
             <label class="ship-card" id="deliveryCard">
               <input type="radio" name="shipping_method" value="delivery" />
-              <div class="ship-card-icon">🛵</div>
+              <div class="ship-card-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18.5" cy="17.5" r="3.5"></circle><circle cx="5.5" cy="17.5" r="3.5"></circle><circle cx="15" cy="5" r="1"></circle><path d="M12 17.5V14l-3-3 4-3 2 3h2"></path></svg>
+              </div>
               <div>
-                <strong>Giao tận nơi (Ship tận giường 🛌💨)</strong>
-                <small>Cước Grab / Be / Xanh SM<br><span class="ship-warn-badge">⚠️ Chưa tính tiền ship vào đơn</span></small>
+                <strong>Giao tận nơi (Shop tự ship)</strong>
+                <small>Shop trực tiếp giao hàng<br><span class="ship-warn-badge">⚠️ Chưa tính tiền ship vào đơn</span></small>
               </div>
             </label>
           </div>
@@ -165,10 +407,12 @@ $shipFeeJson  = SHIP_FEE;
 
         <!-- Hộp thông báo khi chọn Giao tận nơi -->
         <div class="ship-notice-box" id="deliveryNoticeBox" style="display:none">
-          <div class="snb-icon">🛌</div>
+          <div class="snb-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18.5" cy="17.5" r="3.5"></circle><circle cx="5.5" cy="17.5" r="3.5"></circle><path d="M12 17.5V14l-3-3 4-3 2 3h2"></path></svg>
+          </div>
           <div class="snb-content">
-            <strong>Ship tận giường nhà bạn luôn nè 🛵💨:</strong>
-            <p>Bánh ngon sẽ được mang tới tận giường cho bạn, nhưng tổng tiền trên đơn <strong>chưa bao gồm phí ship</strong> đâu nha! Cước ship tính theo app (Grab / Be / Xanh SM) và <strong>bạn thanh toán trực tiếp cho anh shipper khi nhận bánh</strong> nhé 💛.</p>
+            <strong>Shop tự ship tận nơi cho bạn nè:</strong>
+            <p>Bánh ngon sẽ do <strong>shop tự mang tới tận nơi</strong> cho bạn nha! Tổng tiền trên web <strong>chưa bao gồm phí ship</strong>, tiền ship sẽ được thanh toán trực tiếp cho người giao bánh khi nhận nhé 💛.</p>
           </div>
         </div>
 
@@ -193,9 +437,9 @@ $shipFeeJson  = SHIP_FEE;
           <div class="tip-options">
             <button type="button" class="tip-chip active" data-tip="0">0k (Không)</button>
             <button type="button" class="tip-chip" data-tip="5000">5k</button>
-            <button type="button" class="tip-chip" data-tip="10000">10k ☕</button>
-            <button type="button" class="tip-chip" data-tip="20000">20k 🌸</button>
-            <button type="button" class="tip-chip" data-tip="50000">50k 💫</button>
+            <button type="button" class="tip-chip" data-tip="10000">10k</button>
+            <button type="button" class="tip-chip" data-tip="20000">20k</button>
+            <button type="button" class="tip-chip" data-tip="50000">50k</button>
           </div>
           <div class="tip-custom-row">
             <span>Hoặc nhập số tiền khác:</span>
@@ -215,7 +459,10 @@ $shipFeeJson  = SHIP_FEE;
 
     <!-- Sidebar tóm tắt -->
     <aside class="co-cart summary-sidebar" id="summaryStep2">
-      <div class="summary-title">📋 Tóm tắt đơn hàng</div>
+      <div class="summary-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Tóm tắt đơn hàng
+      </div>
       <ul class="summary-list" id="summaryList2"></ul>
       <div class="summary-rows" id="summaryRows2"></div>
     </aside>
@@ -231,7 +478,9 @@ $shipFeeJson  = SHIP_FEE;
       <div class="pay-method-tabs">
         <label class="pay-tab active" id="tabTransfer">
           <input type="radio" name="payment_choice" value="transfer" checked />
-          <span class="pay-tab-icon">⚡</span>
+          <span class="pay-tab-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8b3a2a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="3" height="3"></rect><rect x="14" y="7" width="3" height="3"></rect><rect x="7" y="14" width="3" height="3"></rect><rect x="14" y="14" width="3" height="3"></rect></svg>
+          </span>
           <div>
             <strong>Chuyển khoản VietQR</strong>
             <small>Quét mã QR tự động từ mọi app ngân hàng</small>
@@ -239,7 +488,9 @@ $shipFeeJson  = SHIP_FEE;
         </label>
         <label class="pay-tab" id="tabCOD">
           <input type="radio" name="payment_choice" value="cod" />
-          <span class="pay-tab-icon">💵</span>
+          <span class="pay-tab-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+          </span>
           <div>
             <strong>Thanh toán khi nhận bánh (COD)</strong>
             <small>Tiền mặt hoặc chuyển khoản lúc nhận bánh</small>
@@ -264,7 +515,9 @@ $shipFeeJson  = SHIP_FEE;
           </div>
           <div class="qr-content-display">
             Nội dung CK: <code id="qrContentDisplay"></code>
-            <button type="button" class="btn-copy-code" onclick="copyQRContent()" title="Sao chép nội dung">📋 Sao chép</button>
+            <button type="button" class="btn-copy-code" onclick="copyQRContent()" title="Sao chép nội dung">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>Sao chép
+            </button>
           </div>
           <div class="qr-note">
             📌 Vui lòng chuyển <strong>đúng số tiền và nội dung</strong> để shop xử lý nhanh nhất
@@ -273,15 +526,18 @@ $shipFeeJson  = SHIP_FEE;
 
         <!-- Khung 2: COD Info Box (hiện khi chọn COD) -->
         <div class="cod-box" id="codBox" style="display:none">
-          <div class="cod-icon">💵</div>
+          <div class="cod-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+          </div>
           <h3>Thanh toán khi nhận hàng (COD)</h3>
-          <p>Bạn sẽ thanh toán tiền bánh cho <strong>anh shipper</strong> khi nhận bánh tận nơi (hoặc thanh toán tại quán nếu bạn tự đến lấy).</p>
+          <p>Bạn sẽ thanh toán tiền bánh trực tiếp cho <strong>người giao hàng của shop</strong> khi nhận bánh tận nơi (hoặc thanh toán tại quán nếu bạn tự đến lấy).</p>
           <div class="cod-amount-card">
             <span>Tổng tiền bánh cần thanh toán:</span>
             <strong id="codAmountDisplay">0đ</strong>
           </div>
           <div class="cod-reminder">
-            💡 <em>Lưu ý: Nếu chọn ship tận giường, cước app vận chuyển bạn vui lòng thanh toán riêng cho shipper theo cước app nhé!</em>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#92400e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <em>Lưu ý: Nếu chọn giao tận nơi, phí ship sẽ được thanh toán trực tiếp khi nhận bánh nhé!</em>
           </div>
         </div>
 
@@ -292,11 +548,11 @@ $shipFeeJson  = SHIP_FEE;
           <div class="payment-btns">
             <!-- Nút khi chọn Transfer -->
             <button class="btn-confirm-paid" id="btnConfirmPaid">
-              ✅ Tôi đã chuyển khoản xong — Đặt bánh!
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px;"><polyline points="20 6 9 17 4 12"></polyline></svg>Tôi đã chuyển khoản xong — Đặt bánh!
             </button>
             <!-- Nút khi chọn COD -->
             <button class="btn-confirm-paid btn-cod-main" id="btnSubmitCOD" style="display:none">
-              🛵 Xác nhận đặt bánh (Thanh toán khi nhận hàng) →
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px;"><circle cx="18.5" cy="17.5" r="3.5"></circle><circle cx="5.5" cy="17.5" r="3.5"></circle><path d="M12 17.5V14l-3-3 4-3 2 3h2"></path></svg>Xác nhận đặt bánh (Thanh toán khi nhận hàng) →
             </button>
 
             <div class="payment-spinner" id="paySpinner" style="display:none">
@@ -333,6 +589,6 @@ const BANK_ID        = '<?= BANK_ID ?>';
 const BANK_ACC       = '<?= BANK_ACCOUNT_NO ?>';
 const BANK_NAME      = '<?= BANK_ACCOUNT_NAME ?>';
 </script>
-<script src="assets/js/checkout.js"></script>
+<script src="assets/js/checkout.js?v=<?= filemtime(__DIR__ . '/assets/js/checkout.js') ?>"></script>
 </body>
 </html>

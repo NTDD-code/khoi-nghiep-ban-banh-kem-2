@@ -30,5 +30,10 @@
                     Lena Tiramisu không chỉ là món tráng miệng, mà là khoảng lặng bình yên được
                     vun đắp từ đôi bàn tay kỷ luật và trái tim chân thành nhất.
                 </p>
+                <div style="margin-top: 30px;">
+                    <a href="shokunin.php" style="color: var(--accent); font-weight: 600; font-family: var(--font-serif); font-style: italic; border-bottom: 1.5px solid var(--accent); padding-bottom: 2px; transition: var(--transition); display: inline-flex; align-items: center; gap: 5px;">
+                        Tìm hiểu thêm về triết lý Shokunin của Lena Bakery →
+                    </a>
+                </div>
             </div>
         </section>

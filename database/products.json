@@ -1,0 +1,44 @@
+{
+    "mini": {
+        "id": "mini",
+        "name": "Mini Cup",
+        "price": 20000,
+        "desc": "Nhỏ gọn cho 1 người. Kem Mascarpone ngậy tan, cốt bánh đượm Espresso.",
+        "badge": null,
+        "img": "assets/images/cake-classic.jpg",
+        "flavors": [
+            "cacao",
+            "matcha"
+        ],
+        "is_out_of_stock": false,
+        "is_active": true
+    },
+    "350ml": {
+        "id": "350ml",
+        "name": "Hộp 350ml",
+        "price": 70000,
+        "desc": "Dành cho 2–3 người. Lớp kem dày béo ngậy chuẩn vị.",
+        "badge": "Bán chạy",
+        "img": "assets/images/cake-matcha.png",
+        "flavors": [
+            "cacao",
+            "matcha"
+        ],
+        "is_out_of_stock": false,
+        "is_active": true
+    },
+    "tin750": {
+        "id": "tin750",
+        "name": "Hộp thiếc 750ml",
+        "price": 189000,
+        "desc": "Quà tặng giữ lạnh tối ưu, trang trí dâu/cherry tươi cao cấp.",
+        "badge": "Sang trọng",
+        "img": "assets/images/cake-berry.jpg",
+        "flavors": [
+            "cacao",
+            "matcha"
+        ],
+        "is_out_of_stock": false,
+        "is_active": true
+    }
+}

@@ -21,7 +21,10 @@
 
                 <div class="ib-form-wrap reveal">
                     <form class="ib-form" id="ibForm" novalidate>
-                        <div class="ib-form-title">📬 Để lại lời nhắn</div>
+                        <div class="ib-form-title" style="display:flex;align-items:center;gap:8px;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            <span>Để lại lời nhắn</span>
+                        </div>
 
                         <div class="ib-row">
                             <input type="text" id="ibName" name="sender_name" placeholder="Tên của bạn *" required autocomplete="name" />
@@ -39,7 +42,8 @@
                         </button>
 
                         <div class="ib-success" id="ibSuccess" style="display:none">
-                            ✅ Tin nhắn đã được gửi! Lena sẽ phản hồi sớm nhất có thể.
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            Tin nhắn đã được gửi! Lena sẽ phản hồi sớm nhất có thể.
                         </div>
                         <div class="ib-error" id="ibError" style="display:none"></div>
                     </form>

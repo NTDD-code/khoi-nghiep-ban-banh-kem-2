@@ -59,6 +59,10 @@ foreach ($items as $item) {
 
     if (!isset($products[$pid])) continue;
 
+    if (!empty($products[$pid]['is_out_of_stock'])) {
+        die(json_encode(['ok' => false, 'error' => 'Sản phẩm "' . $products[$pid]['name'] . '" hiện đang tạm hết hàng. Quý khách vui lòng chọn loại khác!']));
+    }
+
     $unitPrice = $products[$pid]['price'] + ($toppings[$topping]['price'] ?? 0);
     $rowTotal  = $unitPrice * $qty;
     $subtotal += $rowTotal;

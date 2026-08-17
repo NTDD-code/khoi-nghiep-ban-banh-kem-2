@@ -9,91 +9,80 @@
                 <!-- Bộ lọc vị -->
                 <div class="menu-flavor-filter">
                     <button class="mff-btn active" data-flavor="">Tất cả</button>
-                    <button class="mff-btn" data-flavor="cacao">☕ Cacao</button>
-                    <button class="mff-btn" data-flavor="matcha">🍵 Matcha</button>
+                    <button class="mff-btn" data-flavor="cacao">Cacao</button>
+                    <button class="mff-btn" data-flavor="matcha">Matcha</button>
                 </div>
             </div>
 
             <div class="menu-grid" id="menuGrid">
-
-                <!-- Mini Cup -->
-                <article class="menu-card reveal" data-flavors="cacao,matcha">
-                    <div class="img-wrap">
-                        <img src="assets/images/cake-classic.jpg"
-                            alt="Mini cup Tiramisu Lena Bakery" loading="lazy" />
+                <?php foreach (PRODUCTS as $pid => $p): ?>
+                <?php 
+                    $isOut    = !empty($p['is_out_of_stock']);
+                    $oosF     = $p['out_of_stock_flavors'] ?? [];
+                    $flavors  = !empty($p['flavors']) ? implode(',', $p['flavors']) : 'cacao,matcha';
+                    $allFlavs = $p['flavors'] ?? ['cacao','matcha'];
+                    $priceInK = $p['price'] >= 1000 ? round($p['price'] / 1000) : $p['price'];
+                    // Hết hàng khi tất cả vị đều hết hoặc is_out_of_stock = true
+                    $fullyOut = $isOut || (!empty($allFlavs) && count(array_intersect($allFlavs, $oosF)) === count($allFlavs));
+                ?>
+                <article class="menu-card reveal <?= $fullyOut ? 'is-out-of-stock' : '' ?>" data-flavors="<?= htmlspecialchars($flavors) ?>">
+                    <?php if ($fullyOut): ?>
+                        <span class="menu-tag out-of-stock-tag" style="background:#ef4444;color:#fff;">Tạm hết hàng</span>
+                    <?php elseif (!empty($p['badge'])): ?>
+                        <span class="menu-tag"><?= htmlspecialchars($p['badge']) ?></span>
+                    <?php endif; ?>
+                    
+                    <div class="img-wrap" style="<?= $fullyOut ? 'filter: grayscale(0.5) opacity(0.85);' : '' ?>">
+                        <img src="<?= htmlspecialchars($p['img'] ?: 'assets/images/cake-classic.jpg') ?>"
+                            alt="<?= htmlspecialchars($p['name']) ?> Lena Bakery" loading="lazy" />
                     </div>
                     <div class="menu-body">
                         <div class="menu-info">
                             <div>
-                                <h3>Mini Cup</h3>
+                                <h3>
+                                    <?= htmlspecialchars($p['name']) ?>
+                                    <?php if ($fullyOut): ?>
+                                        <span class="badge" style="background:#fee2e2;color:#dc2626;">Tạm hết</span>
+                                    <?php elseif (!empty($p['badge'])): ?>
+                                        <span class="badge"><?= htmlspecialchars($p['badge']) ?></span>
+                                    <?php endif; ?>
+                                </h3>
                                 <div class="menu-flavor-chips">
-                                    <span class="mfc cacao">☕ Cacao</span>
-                                    <span class="mfc matcha">🍵 Matcha</span>
+                                    <?php foreach ($allFlavs as $f): 
+                                        $fIsOut = in_array($f, $oosF);
+                                    ?>
+                                    <span class="mfc <?= htmlspecialchars($f) ?>"
+                                          style="<?= $fIsOut ? 'text-decoration:line-through;opacity:0.5;' : '' ?>"
+                                          title="<?= $fIsOut ? ucfirst(htmlspecialchars($f)) . ' tạm hết' : ucfirst(htmlspecialchars($f)) . ' còn hàng' ?>">
+                                        <?= ucfirst(htmlspecialchars($f)) ?>
+                                        <?php if ($fIsOut): ?>
+                                            <small style="font-size:9px;display:block;color:#ef4444;text-decoration:none;">hết</small>
+                                        <?php endif; ?>
+                                    </span>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
-                            <span class="menu-price">20<small>k</small></span>
+                            <span class="menu-price"><?= $priceInK ?><small>k</small></span>
                         </div>
-                        <div class="menu-desc">Nhỏ gọn cho 1 người. Kem Mascarpone ngậy tan, cốt bánh đượm Espresso.</div>
-                        <a href="checkout.php?pid=mini" class="menu-order-btn">
+                        <div class="menu-desc"><?= htmlspecialchars($p['desc']) ?></div>
+                        
+                        <?php if ($fullyOut): ?>
+                        <button type="button" class="menu-order-btn out-of-stock-btn" disabled style="background:#f3f4f6;color:#9ca3af;cursor:not-allowed;border-color:#e5e7eb;">
+                            Tạm hết hàng
+                        </button>
+                        <?php else: ?>
+                        <a href="checkout.php?pid=<?= urlencode($pid) ?>" class="menu-order-btn">
                             Đặt ngay →
                         </a>
+                        <?php endif; ?>
                     </div>
                 </article>
-
-                <!-- Hộp 350ml -->
-                <article class="menu-card reveal" data-flavors="cacao,matcha">
-                    <span class="menu-tag">Bán chạy</span>
-                    <div class="img-wrap">
-                        <img src="assets/images/cake-matcha.png"
-                            alt="Hộp 350ml Tiramisu Matcha Lena Bakery" loading="lazy" />
-                    </div>
-                    <div class="menu-body">
-                        <div class="menu-info">
-                            <div>
-                                <h3>Hộp 350ml <span class="badge">Bán chạy</span></h3>
-                                <div class="menu-flavor-chips">
-                                    <span class="mfc cacao">☕ Cacao</span>
-                                    <span class="mfc matcha">🍵 Matcha</span>
-                                </div>
-                            </div>
-                            <span class="menu-price">70<small>k</small></span>
-                        </div>
-                        <div class="menu-desc">Dành cho 2–3 người. Lớp kem dày béo ngậy chuẩn vị.</div>
-                        <a href="checkout.php?pid=350ml" class="menu-order-btn">
-                            Đặt ngay →
-                        </a>
-                    </div>
-                </article>
-
-                <!-- Hộp thiếc 750ml -->
-                <article class="menu-card reveal" data-flavors="cacao,matcha">
-                    <span class="menu-tag">Sang trọng</span>
-                    <div class="img-wrap">
-                        <img src="assets/images/cake-berry.jpg"
-                            alt="Hộp thiếc 750ml Tiramisu sang trọng Lena Bakery" loading="lazy" />
-                    </div>
-                    <div class="menu-body">
-                        <div class="menu-info">
-                            <div>
-                                <h3>Hộp thiếc 750ml <span class="badge">Sang trọng</span></h3>
-                                <div class="menu-flavor-chips">
-                                    <span class="mfc cacao">☕ Cacao</span>
-                                    <span class="mfc matcha">🍵 Matcha</span>
-                                </div>
-                            </div>
-                            <span class="menu-price">189<small>k</small></span>
-                        </div>
-                        <div class="menu-desc">Quà tặng giữ lạnh tối ưu, trang trí dâu/cherry tươi cao cấp.</div>
-                        <a href="checkout.php?pid=tin750" class="menu-order-btn">
-                            Đặt ngay →
-                        </a>
-                    </div>
-                </article>
-
+                <?php endforeach; ?>
             </div>
 
+
             <div class="menu-note reveal">
-                <strong>🍓 Trái cây tươi ăn kèm <span style="font-weight:400;font-size:13px;color:var(--gray);">(Gọi thêm khi đặt)</span></strong>
+                <strong>Trái cây tươi ăn kèm <span style="font-weight:400;font-size:13px;color:var(--gray);">(Gọi thêm khi đặt)</span></strong>
                 <div class="fruit-list">
                     <span>Dâu tây tươi <span class="price">15k</span></span>
                     <span>Cherry nhập khẩu <span class="price">20k</span></span>

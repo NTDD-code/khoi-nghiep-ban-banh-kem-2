@@ -30,34 +30,14 @@ define('BANK_ACCOUNT_NO',  '060330115826');
 define('BANK_ACCOUNT_NAME','TA TRAN NGOC ANH');
 
 // --- PHÍ SHIP ---
-define('SHIP_FEE',     30000);  // VND — phí ship cơ bản (Grab/Be theo cước)
-define('SHIP_NOTE',    'Tính theo cước app giao hàng (Grab / Be / Xanh SM)');
+define('SHIP_FEE',     0);      // VND — phí ship chưa tính vào đơn, shop tự giao và thu khi nhận
+define('SHIP_NOTE',    'Shop trực tiếp đi giao hàng tận nơi (thanh toán phí ship khi nhận)');
+
+require_once __DIR__ . '/products.php';
 
 // --- SẢN PHẨM ---
-// Key = product_id (dùng trong DB và JS)
-define('PRODUCTS', [
-    'mini' => [
-        'name'  => 'Mini Cup',
-        'price' => 20000,
-        'desc'  => 'Nhỏ gọn cho 1 người. Kem Mascarpone ngậy tan, cốt bánh đượm Espresso.',
-        'badge' => null,
-        'img'   => 'assets/images/cake-classic.jpg',
-    ],
-    '350ml' => [
-        'name'  => 'Hộp 350ml',
-        'price' => 70000,
-        'desc'  => 'Dành cho 2–3 người. Lớp kem dày béo ngậy chuẩn vị.',
-        'badge' => 'Bán chạy',
-        'img'   => 'assets/images/cake-matcha.png',
-    ],
-    'tin750' => [
-        'name'  => 'Hộp thiếc 750ml',
-        'price' => 189000,
-        'desc'  => 'Quà tặng giữ lạnh tối ưu, trang trí dâu/cherry tươi cao cấp.',
-        'badge' => 'Sang trọng',
-        'img'   => 'assets/images/cake-berry.jpg',
-    ],
-]);
+// Danh sách sản phẩm động (hỗ trợ bật tắt, hết hàng, sửa giá từ Admin)
+define('PRODUCTS', get_all_products(true));
 
 // --- TOPPING ---
 define('TOPPINGS', [
@@ -69,9 +49,9 @@ define('TOPPINGS', [
 
 // --- TRẠNG THÁI ĐƠN HÀNG ---
 define('ORDER_STATUSES', [
-    'new'       => ['label' => '🆕 Mới',        'color' => '#f59e0b'],
-    'confirmed' => ['label' => '✅ Đã xác nhận', 'color' => '#3b82f6'],
-    'making'    => ['label' => '👨‍🍳 Đang làm',   'color' => '#8b5cf6'],
-    'done'      => ['label' => '🎉 Hoàn thành', 'color' => '#10b981'],
-    'cancelled' => ['label' => '❌ Đã huỷ',     'color' => '#ef4444'],
+    'new'       => ['label' => 'Mới',           'color' => '#f59e0b'],
+    'confirmed' => ['label' => 'Đã xác nhận',   'color' => '#3b82f6'],
+    'making'    => ['label' => 'Đang làm',      'color' => '#8b5cf6'],
+    'done'      => ['label' => 'Hoàn thành',    'color' => '#10b981'],
+    'cancelled' => ['label' => 'Đã huỷ',        'color' => '#ef4444'],
 ]);

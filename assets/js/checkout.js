@@ -30,6 +30,18 @@ function goStep(n, pushHistory = true) {
   });
   document.getElementById(`step${n}`).classList.add('active');
   currentStep = n;
+
+  // Toggle mobile bar
+  const mBar = document.getElementById('mobileCartBar');
+  if (mBar) {
+    const count = Object.values(cart).reduce((s, v) => s + v.qty, 0);
+    if (n === 1 && count > 0) {
+      mBar.classList.add('visible');
+    } else {
+      mBar.classList.remove('visible');
+    }
+  }
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   if (pushHistory) {
@@ -42,6 +54,11 @@ function goStep(n, pushHistory = true) {
 
 // ---- Cart logic ----
 function updateCart(pid, delta) {
+  if (PRODUCTS_DATA[pid] && PRODUCTS_DATA[pid].is_out_of_stock && delta > 0) {
+    showError(`Sản phẩm "${PRODUCTS_DATA[pid].name}" hiện đang tạm hết hàng.`);
+    return;
+  }
+
   if (!cart[pid]) cart[pid] = { qty: 0, flavor: 'cacao', topping: 'none' };
   cart[pid].qty = Math.max(0, cart[pid].qty + delta);
 
@@ -78,25 +95,112 @@ function renderCartUI() {
     document.querySelector(`.product-card[data-pid="${pid}"]`)?.classList.toggle('in-cart', !!(c && c.qty > 0));
   });
 
-  // Cart sidebar
-  document.getElementById('cartCount').textContent = count > 0 ? `${count} món` : '0 món';
+  // Cart sidebar (desktop)
+  const countText = count > 0 ? `${count} món` : '0 món';
+  document.getElementById('cartCount').textContent = countText;
   document.getElementById('cartEmpty').style.display  = count === 0 ? '' : 'none';
   document.getElementById('cartTotalRow').style.display = count === 0 ? 'none' : '';
   document.getElementById('cartNextBtn').disabled = count === 0;
 
+  // Mobile Floating Cart Bar Sync
+  const mBar  = document.getElementById('mobileCartBar');
+  const mCount = document.getElementById('mCartCount');
+  const mTotal = document.getElementById('mCartTotal');
+  const mBtn   = document.getElementById('mCartNextBtn');
+  if (mBar) {
+    if (count > 0 && currentStep === 1) {
+      mBar.classList.add('visible');
+    } else {
+      mBar.classList.remove('visible');
+    }
+  }
+  if (mCount) mCount.textContent = `${count} món đã chọn`;
+  if (mTotal) mTotal.textContent = fmt(subtotal);
+  if (mBtn)   mBtn.disabled = count === 0;
+
+  // Desktop cart sidebar list
   const list = document.getElementById('cartList');
-  list.innerHTML = items.filter(([,v]) => v.qty > 0).map(([pid, v]) => {
-    const p = PRODUCTS_DATA[pid];
+  if (list) {
+    list.innerHTML = items.filter(([,v]) => v.qty > 0).map(([pid, v]) => {
+      const p = PRODUCTS_DATA[pid];
+      const top = TOPPINGS_DATA[v.topping];
+      const rowPrice = (p.price + (top?.price ?? 0)) * v.qty;
+      return `<li class="cart-item">
+        <div class="ci-name">${p.name} ×${v.qty}</div>
+        <div class="ci-meta">${v.flavor} • ${top?.name ?? ''}</div>
+        <div class="ci-price">${fmt(rowPrice)}</div>
+      </li>`;
+    }).join('');
+  }
+
+  const cartSub = document.getElementById('cartSubtotal');
+  if (cartSub) cartSub.textContent = fmt(subtotal);
+
+  // Sync cart sheet subtotal nếu đang mở
+  const sheetSub = document.getElementById('cartSheetSubtotal');
+  if (sheetSub) sheetSub.textContent = fmt(subtotal);
+  renderCartSheet();
+}
+
+// ---- Cart Bottom Sheet (mobile KFC-style) ----
+function renderCartSheet() {
+  const sheetList = document.getElementById('cartSheetList');
+  if (!sheetList) return;
+
+  const items = Object.entries(cart).filter(([, v]) => v.qty > 0);
+  if (items.length === 0) {
+    sheetList.innerHTML = '<li class="cart-sheet-empty">🧁 Chưa có món nào trong giỏ</li>';
+    return;
+  }
+
+  sheetList.innerHTML = items.map(([pid, v]) => {
+    const p   = PRODUCTS_DATA[pid];
     const top = TOPPINGS_DATA[v.topping];
     const rowPrice = (p.price + (top?.price ?? 0)) * v.qty;
-    return `<li class="cart-item">
-      <div class="ci-name">${p.name} ×${v.qty}</div>
-      <div class="ci-meta">${v.flavor} • ${top?.name ?? ''}</div>
-      <div class="ci-price">${fmt(rowPrice)}</div>
+    const imgSrc = p.img || '';
+    return `<li class="cart-sheet-item">
+      <img class="csi-img" src="${imgSrc}" alt="${p.name}" loading="lazy" />
+      <div class="csi-info">
+        <div class="csi-name">${p.name} ×${v.qty}</div>
+        <div class="csi-meta">${v.flavor}${top?.name ? ' · ' + top.name : ''}</div>
+      </div>
+      <div class="csi-price">${fmt(rowPrice)}</div>
     </li>`;
   }).join('');
+}
 
-  document.getElementById('cartSubtotal').textContent = fmt(subtotal);
+function openCartSheet() {
+  const count = Object.values(cart).reduce((s, v) => s + v.qty, 0);
+  if (count === 0) { showError('Vui lòng chọn ít nhất 1 loại bánh'); return; }
+
+  renderCartSheet();
+  const subtotal = calcSubtotal();
+  const sheetSub = document.getElementById('cartSheetSubtotal');
+  if (sheetSub) sheetSub.textContent = fmt(subtotal);
+
+  const overlay = document.getElementById('cartSheetOverlay');
+  const sheet   = document.getElementById('cartSheet');
+  if (!sheet) return;
+
+  overlay.style.display = 'block';
+  document.body.style.overflow = 'hidden'; // khóa cuộn body
+  requestAnimationFrame(() => {
+    overlay.classList.add('open');
+    sheet.classList.add('open');
+  });
+}
+
+function closeCartSheet() {
+  const overlay = document.getElementById('cartSheetOverlay');
+  const sheet   = document.getElementById('cartSheet');
+  if (!sheet) return;
+
+  overlay.classList.remove('open');
+  sheet.classList.remove('open');
+  document.body.style.overflow = '';
+
+  // Ẩn overlay sau animation
+  setTimeout(() => { overlay.style.display = 'none'; }, 380);
 }
 
 function calcSubtotal() {
@@ -105,6 +209,7 @@ function calcSubtotal() {
     return s + (PRODUCTS_DATA[pid].price + topPrice) * v.qty;
   }, 0);
 }
+
 
 // ---- Step 2: summary + validate ----
 function renderSummaryStep2() {
@@ -115,22 +220,26 @@ function renderSummaryStep2() {
   const isDelivery = getShipMethod() === 'delivery';
   const total      = sub + tipAmount; // Tiền ship thanh toán riêng cho shipper
 
-  list.innerHTML = items.map(([pid, v]) => {
-    const p   = PRODUCTS_DATA[pid];
-    const top = TOPPINGS_DATA[v.topping];
-    return `<li>${p.name} ×${v.qty} (${v.flavor}, ${top?.name}) — ${fmt((p.price+(top?.price??0))*v.qty)}</li>`;
-  }).join('');
+  if (list) {
+    list.innerHTML = items.map(([pid, v]) => {
+      const p   = PRODUCTS_DATA[pid];
+      const top = TOPPINGS_DATA[v.topping];
+      return `<li>${p.name} ×${v.qty} (${v.flavor}, ${top?.name}) — ${fmt((p.price+(top?.price??0))*v.qty)}</li>`;
+    }).join('');
+  }
 
-  rows.innerHTML = `
-    <div class="sum-row"><span>Tạm tính</span><span>${fmt(sub)}</span></div>
-    <div class="sum-row">
-      <span>Phí ship</span>
-      <span>${isDelivery ? '<strong class="text-warn">Chưa tính (Ship tận giường trả shipper)</strong>' : '<span class="text-success">Miễn phí (Pickup)</span>'}</span>
-    </div>
-    <div class="sum-row"><span>Tip 💛</span><span>${fmt(tipAmount)}</span></div>
-    <div class="sum-row total"><span>Tổng cộng</span><strong>${fmt(total)}</strong></div>
-    ${isDelivery ? '<div class="sum-ship-tip">🛌 <em>Ship tận giường nhà bạn luôn — Tiền ship tính theo cước app và gửi riêng cho shipper khi nhận bánh nhé!</em></div>' : ''}
-  `;
+  if (rows) {
+    rows.innerHTML = `
+      <div class="sum-row"><span>Tạm tính</span><span>${fmt(sub)}</span></div>
+      <div class="sum-row">
+        <span>Phí ship</span>
+        <span>${isDelivery ? '<strong class="text-warn">Chưa tính (Shop tự giao tận nơi)</strong>' : '<span class="text-success">Miễn phí (Pickup)</span>'}</span>
+      </div>
+      <div class="sum-row"><span>Tip</span><span>${fmt(tipAmount)}</span></div>
+      <div class="sum-row total"><span>Tổng cộng</span><strong>${fmt(total)}</strong></div>
+      ${isDelivery ? '<div class="sum-ship-tip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><circle cx="18.5" cy="17.5" r="3.5"></circle><circle cx="5.5" cy="17.5" r="3.5"></circle><path d="M12 17.5V14l-3-3 4-3 2 3h2"></path></svg><em>Giao tận nơi — Bánh do shop tự đi giao, phí ship sẽ được gửi trực tiếp khi nhận bánh nhé!</em></div>' : ''}
+    `;
+  }
 }
 
 function validateStep2() {
@@ -183,9 +292,9 @@ function copyQRContent() {
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.querySelector('.btn-copy-code');
     if (btn) {
-      const oldText = btn.textContent;
-      btn.textContent = '✅ Đã chép!';
-      setTimeout(() => { btn.textContent = oldText; }, 2000);
+      const oldHtml = btn.innerHTML;
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg>Đã chép!';
+      setTimeout(() => { btn.innerHTML = oldHtml; }, 2000);
     }
   }).catch(() => {
     // Fallback
@@ -234,22 +343,50 @@ function renderStep3() {
 
   // Final summary
   const items = Object.entries(cart).filter(([,v]) => v.qty > 0);
-  document.getElementById('finalSummary').innerHTML = `
-    <div class="fs-title">📋 Xác nhận đơn hàng</div>
-    <div class="fs-row"><b>Khách:</b> ${esc(name)} — ${esc(document.getElementById('customerPhone').value.trim())}</div>
-    <div class="fs-row"><b>Giao:</b> ${isDelivery ? '🛵 ' + esc(document.getElementById('customerAddr').value.trim()) + ' (Ship tận giường)' : '🏪 Pickup tại quán'}</div>
-    <hr/>
-    ${items.map(([pid,v]) => {
-      const p = PRODUCTS_DATA[pid]; const top = TOPPINGS_DATA[v.topping];
-      return `<div class="fs-row">${p.name} ×${v.qty} — ${fmt((p.price+(top?.price??0))*v.qty)}</div>`;
-    }).join('')}
-    <hr/>
-    <div class="fs-row"><span>Sản phẩm</span><span>${fmt(sub)}</span></div>
-    <div class="fs-row"><span>Phí ship</span><span>${isDelivery ? '<strong class="text-warn">Chưa tính (khách gửi shipper)</strong>' : '<span class="text-success">Miễn phí (Pickup)</span>'}</span></div>
-    ${tipAmount ? `<div class="fs-row"><span>Tip 💛</span><span>${fmt(tipAmount)}</span></div>` : ''}
-    <div class="fs-row fs-total"><span>Tổng thanh toán</span><strong>${fmt(total)}</strong></div>
-    ${isDelivery ? `<div class="fs-ship-alert">🛌 <strong>Ship tận giường:</strong> Tiền thanh toán ở đây <u>chưa tính tiền ship</u>. Cước giao hàng tính theo app (Grab/Be/Xanh SM) và bạn gửi trực tiếp cho anh shipper khi nhận bánh nha!</div>` : ''}
-  `;
+  const deliveryIconSvg = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><circle cx="18.5" cy="17.5" r="3.5"></circle><circle cx="5.5" cy="17.5" r="3.5"></circle><path d="M12 17.5V14l-3-3 4-3 2 3h2"></path></svg>`;
+  const pickupIconSvg = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>`;
+  const receiptIconSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>`;
+  const infoIconSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-left:3px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+
+  const finalSummaryEl = document.getElementById('finalSummary');
+  if (finalSummaryEl) {
+    finalSummaryEl.innerHTML = `
+      <div class="fs-title">${receiptIconSvg} Xác nhận đơn hàng</div>
+      <div class="fs-row"><b>Khách:</b> ${esc(name)} — ${esc(document.getElementById('customerPhone')?.value.trim() || '')}</div>
+      <div class="fs-row"><b>Giao:</b> ${isDelivery ? deliveryIconSvg + esc(document.getElementById('customerAddr')?.value.trim() || '') + ' (Shop tự giao)' : pickupIconSvg + ' Pickup tại quán'}</div>
+      <hr/>
+      ${items.map(([pid,v]) => {
+        const p = PRODUCTS_DATA[pid]; const top = TOPPINGS_DATA[v.topping];
+        return `<div class="fs-row">${p.name} ×${v.qty} — ${fmt((p.price+(top?.price??0))*v.qty)}</div>`;
+      }).join('')}
+      <hr/>
+      <div class="fs-row"><span>Sản phẩm</span><span>${fmt(sub)}</span></div>
+      <div class="fs-row"><span>Phí ship</span><span>${isDelivery ? '<strong class="text-warn">Chưa tính (thanh toán khi nhận bánh)</strong>' : '<span class="text-success">Miễn phí (Pickup)</span>'}</span></div>
+      ${tipAmount ? `<div class="fs-row"><span>Tip</span><span>${fmt(tipAmount)}</span></div>` : ''}
+      <div class="fs-row fs-total"><span>Tổng thanh toán</span><strong>${fmt(total)}</strong></div>
+      ${isDelivery ? `
+        <div class="fs-ship-alert">
+          ${deliveryIconSvg} <strong>Giao tận nơi:</strong> Bánh do shop tự đi giao, tổng tiền trên web <button type="button" class="btn-ship-explain" onclick="toggleShipExplain(this)"><u>chưa bao gồm tiền ship</u> ${infoIconSvg}</button>. Bạn vui lòng gửi tiền ship trực tiếp cho người giao khi nhận bánh nha!
+          <div class="ship-explain-popover" style="display:none;">
+            <div class="sep-header">
+              <strong>${infoIconSvg} Vì sao chưa tính tiền ship?</strong>
+              <button type="button" class="sep-close" onclick="this.parentElement.parentElement.style.display='none'">✕</button>
+            </div>
+            <p>• Shop trực tiếp ship tận tay để đảm bảo bánh luôn mát lạnh & nguyên vẹn nhất.</p>
+            <p>• Cước phí tính theo khoảng cách thực tế từ tiệm đến địa chỉ của bạn.</p>
+            <p>• Bạn chỉ cần thanh toán tiền ship bằng tiền mặt hoặc chuyển khoản khi nhận bánh!</p>
+          </div>
+        </div>
+      ` : ''}
+    `;
+  }
+}
+
+function toggleShipExplain(btn) {
+  const pop = btn.parentElement.querySelector('.ship-explain-popover');
+  if (pop) {
+    pop.style.display = pop.style.display === 'none' ? 'block' : 'none';
+  }
 }
 
 async function submitOrder(payMethod) {
@@ -460,4 +597,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial render
   renderCartUI();
   updateTipDisplay();
+
+  // Swipe-down để đóng cart sheet (mobile)
+  let tsY = 0;
+  document.getElementById('cartSheet')?.addEventListener('touchstart', e => {
+    tsY = e.touches[0].clientY;
+  }, { passive: true });
+  document.getElementById('cartSheet')?.addEventListener('touchend', e => {
+    const dy = e.changedTouches[0].clientY - tsY;
+    if (dy > 80) closeCartSheet(); // kéo xuống > 80px → đóng
+  }, { passive: true });
+
+  // Phím Escape đóng sheet
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeCartSheet();
+  });
 });

@@ -1,6 +1,7 @@
 <?php
 // Lena Bakery Landing Page - PHP Version
 
+require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/head.php';
 require_once __DIR__ . '/includes/header.php';
 

@@ -1,4 +1,4 @@
-﻿<!-- ===== HERO ===== -->
+<!-- ===== HERO ===== -->
         <section class="hero" id="home">
             <div class="reveal">
                 <div class="section-label">Tiramisu tươi — làm theo đơn</div>
@@ -23,8 +23,10 @@
         <!-- ===== HERO IMAGE ===== -->
         <div class="hero-image-wrap reveal">
             <div class="img-inner">
-                <img src="assets/images/hero-1.jpg"
-                    alt="Tiramisu Cacao trái cây" style="object-position:center center;" />
+                <img src="assets/images/hero-1.png"
+                    alt="Tiramisu Cacao trái cây Lena Bakery" 
+                    fetchpriority="high"
+                    style="object-position:center center;" />
             </div>
             <div class="image-caption">
                 <span>Lena Bakery / TP. HCM</span>

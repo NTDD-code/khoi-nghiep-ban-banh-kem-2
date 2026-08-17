@@ -51,8 +51,7 @@
                         <span class="icon">+</span>
                     </button>
                     <div class="faq-a">
-                        Phí ship được tính theo <strong>cước app giao hàng</strong> (Grab / Be / Xanh SM) tùy khoảng
-                        cách tại khu vực nội thành TP.HCM.
+                        Bánh do shop trực tiếp đi giao tận nơi tại khu vực TP.HCM. Phí ship sẽ tùy thuộc vào khoảng cách và thanh toán trực tiếp khi nhận bánh.
                     </div>
                 </div>
 

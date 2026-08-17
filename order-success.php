@@ -44,8 +44,8 @@ $orderDate  = date('d/m/Y H:i', strtotime($order['created_at']));
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css" />
-<link rel="stylesheet" href="assets/css/checkout.css" />
+<link rel="stylesheet" href="assets/css/style.css?v=<?= filemtime(__DIR__ . '/assets/css/style.css') ?>" />
+<link rel="stylesheet" href="assets/css/checkout.css?v=<?= filemtime(__DIR__ . '/assets/css/checkout.css') ?>" />
 </head>
 <body class="success-page">
 
@@ -63,7 +63,12 @@ $orderDate  = date('d/m/Y H:i', strtotime($order['created_at']));
 
   <!-- Hero thank you -->
   <div class="success-hero">
-    <div class="success-icon">🎂</div>
+    <div class="success-icon">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+        <circle cx="12" cy="12" r="10" style="stroke: var(--gold); fill: var(--cream);"></circle>
+        <polyline points="8 12 11 15 16 9" style="stroke: var(--accent);"></polyline>
+      </svg>
+    </div>
     <h1 class="success-title">
       Cảm ơn bạn <em><?= htmlspecialchars($order['customer_name']) ?></em>!
     </h1>
@@ -72,7 +77,7 @@ $orderDate  = date('d/m/Y H:i', strtotime($order['created_at']));
       <?= $isCOD ? 'Bạn sẽ thanh toán khi nhận bánh.' : 'Shop sẽ xác nhận sau khi kiểm tra chuyển khoản.' ?>
     </p>
     <div class="success-status">
-      Trạng thái: <span class="status-badge status-new">🆕 Đang chờ xác nhận</span>
+      Trạng thái: <span class="status-badge status-new"><span class="status-dot"></span>Đang chờ xác nhận</span>
     </div>
   </div>
 
@@ -114,10 +119,18 @@ $orderDate  = date('d/m/Y H:i', strtotime($order['created_at']));
           <?php if ($order['customer_addr']): ?>
           <div><?= htmlspecialchars($order['customer_addr']) ?></div>
           <?php else: ?>
-          <div>🏪 Pickup tại quán</div>
+          <div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:3px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>Pickup tại quán
+          </div>
           <?php endif; ?>
-          <div style="margin-top:6px;font-weight:600;color:#b8956a;">
-            <?= $isCOD ? '💵 Thanh toán khi nhận hàng (COD)' : '⚡ Đã chuyển khoản VietQR' ?>
+          <div style="margin-top:6px;font-weight:600;color:#b8956a;display:flex;align-items:center;gap:4px;">
+            <?php if ($isCOD): ?>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle></svg>
+              <span>Thanh toán khi nhận hàng (COD)</span>
+            <?php else: ?>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b8956a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="3" height="3"></rect><rect x="14" y="7" width="3" height="3"></rect><rect x="7" y="14" width="3" height="3"></rect><rect x="14" y="14" width="3" height="3"></rect></svg>
+              <span>Đã chuyển khoản VietQR</span>
+            <?php endif; ?>
           </div>
         </div>
       </div>
@@ -154,7 +167,7 @@ $orderDate  = date('d/m/Y H:i', strtotime($order['created_at']));
         <?php if (!$isPickup): ?>
         <tr class="inv-row">
           <td colspan="4">Phí giao hàng (Ship)</td>
-          <td><span style="color:#b45309;font-weight:600;">Chưa tính — trả shipper</span></td>
+          <td><span style="color:#b45309;font-weight:600;">Chưa tính — thanh toán khi nhận</span></td>
         </tr>
         <?php else: ?>
         <tr class="inv-row">
@@ -164,7 +177,7 @@ $orderDate  = date('d/m/Y H:i', strtotime($order['created_at']));
         <?php endif; ?>
         <?php if ($order['tip'] > 0): ?>
         <tr class="inv-row">
-          <td colspan="4">Tip 💛</td>
+          <td colspan="4">Tip</td>
           <td><?= number_format($order['tip'], 0, ',', '.') ?>đ</td>
         </tr>
         <?php endif; ?>
@@ -177,9 +190,11 @@ $orderDate  = date('d/m/Y H:i', strtotime($order['created_at']));
 
     <?php if (!$isPickup): ?>
     <div class="inv-ship-note">
-      <span class="inv-ship-note-icon">🛵</span>
+      <span class="inv-ship-note-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18.5" cy="17.5" r="3.5"></circle><circle cx="5.5" cy="17.5" r="3.5"></circle><path d="M12 17.5V14l-3-3 4-3 2 3h2"></path></svg>
+      </span>
       <div>
-        <strong>Lưu ý phí ship:</strong> Hoá đơn trên chưa bao gồm phí giao hàng. Khi shipper mang bánh đến, quý khách vui lòng thanh toán cước ship theo app trực tiếp cho anh shipper nhé 💛
+        <strong>Lưu ý phí ship:</strong> Hoá đơn trên chưa bao gồm phí giao hàng. Bánh do shop trực tiếp đi giao, quý khách vui lòng thanh toán tiền ship khi nhận bánh nhé.
       </div>
     </div>
     <?php endif; ?>
@@ -194,7 +209,7 @@ $orderDate  = date('d/m/Y H:i', strtotime($order['created_at']));
     <div class="invoice-footer">
       <div>
         <div class="inv-footer-brand">Lena Bakery</div>
-        <div>Cảm ơn bạn đã ủng hộ! Bánh làm tươi theo đơn 🎂</div>
+        <div>Cảm ơn bạn đã ủng hộ! Bánh được làm tươi theo đơn đặt hàng.</div>
       </div>
       <div class="inv-footer-contact">
         <div><?= SHOP_FACEBOOK ?></div>
@@ -206,11 +221,26 @@ $orderDate  = date('d/m/Y H:i', strtotime($order['created_at']));
 
   <!-- Actions -->
   <div class="success-actions">
-    <button class="btn-print" onclick="window.print()">🖨️ In hoá đơn / Lưu PDF</button>
-    <a href="<?= SHOP_ZALO ?>" target="_blank" class="btn-contact zalo">💬 Nhắn Zalo</a>
-    <a href="https://m.me/caryln.fer" target="_blank" class="btn-contact fb">📱 Nhắn Messenger</a>
-    <a href="checkout.php" class="btn-order-more">🛍️ Đặt thêm</a>
-    <a href="index.php" class="btn-home">Về trang chủ</a>
+    <button class="btn-print" onclick="window.print()" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      <span>In hoá đơn / Lưu PDF</span>
+    </button>
+    <a href="<?= SHOP_ZALO ?>" target="_blank" class="btn-contact zalo" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      <span>Nhắn Zalo</span>
+    </a>
+    <a href="https://m.me/caryln.fer" target="_blank" class="btn-contact fb" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+      <span>Nhắn Messenger</span>
+    </a>
+    <a href="checkout.php" class="btn-order-more" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+      <span>Đặt thêm</span>
+    </a>
+    <a href="index.php" class="btn-home" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      <span>Về trang chủ</span>
+    </a>
   </div>
 
 </main>

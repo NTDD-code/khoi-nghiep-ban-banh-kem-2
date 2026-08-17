@@ -32,7 +32,7 @@
             <div class="menu-note reveal msg-box" style="margin-top:48px;">
                 <div class="msg-box-header">
                     <div class="msg-box-title">
-                        <span class="msg-box-badge">📋 Mẫu nhắn nhanh</span>
+                        <span class="msg-box-badge">Mẫu nhắn nhanh</span>
                         <strong>Mẫu tin nhắn đặt bánh</strong>
                     </div>
                     <button class="copy-btn" id="copyMsgBtn">
@@ -41,17 +41,23 @@
                     </button>
                 </div>
                 <div class="msg-template-card" id="msgToCopy">
-                    <div class="msg-line"><span class="msg-key">🎂 Bánh:</span> <span class="msg-val">Tiramisu (Mini / 350ml / Hộp thiếc)</span></div>
-                    <div class="msg-line"><span class="msg-key">🍫 Vị:</span> <span class="msg-val">Cacao / Matcha</span></div>
-                    <div class="msg-line"><span class="msg-key">🍓 Topping:</span> <span class="msg-val">Dâu / Cherry (nếu có)</span></div>
-                    <div class="msg-line"><span class="msg-key">🔢 Số lượng:</span> <span class="msg-val">...</span></div>
-                    <div class="msg-line"><span class="msg-key">📅 Ngày nhận:</span> <span class="msg-val">...</span></div>
-                    <div class="msg-line"><span class="msg-key">📍 Khu vực:</span> <span class="msg-val">...</span></div>
-                    <div class="msg-line"><span class="msg-key">🛵 Hình thức:</span> <span class="msg-val">Ship / Pickup</span></div>
+                    <div class="msg-line"><span class="msg-key">Bánh:</span> <span class="msg-val">Tiramisu (Mini / 350ml / Hộp thiếc)</span></div>
+                    <div class="msg-line"><span class="msg-key">Vị:</span> <span class="msg-val">Cacao / Matcha</span></div>
+                    <div class="msg-line"><span class="msg-key">Topping:</span> <span class="msg-val">Dâu / Cherry (nếu có)</span></div>
+                    <div class="msg-line"><span class="msg-key">Số lượng:</span> <span class="msg-val">...</span></div>
+                    <div class="msg-line"><span class="msg-key">Ngày nhận:</span> <span class="msg-val">...</span></div>
+                    <div class="msg-line"><span class="msg-key">Khu vực:</span> <span class="msg-val">...</span></div>
+                    <div class="msg-line"><span class="msg-key">Hình thức:</span> <span class="msg-val">Ship / Pickup</span></div>
                 </div>
                 <div class="msg-actions">
-                    <a href="https://zalo.me/0906819341" target="_blank" class="msg-btn zalo-btn">💬 Nhắn qua Zalo</a>
-                    <a href="https://www.facebook.com/caryln.fer" target="_blank" class="msg-btn fb-msg-btn">📱 Nhắn qua Messenger</a>
+                    <a href="https://zalo.me/0906819341" target="_blank" class="msg-btn zalo-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                        <span>Nhắn qua Zalo</span>
+                    </a>
+                    <a href="https://www.facebook.com/caryln.fer" target="_blank" class="msg-btn fb-msg-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        <span>Nhắn qua Messenger</span>
+                    </a>
                 </div>
             </div>
         </section>
@@ -68,8 +74,8 @@
                         <span class="delivery-index" aria-hidden="true">01</span>
                         <div>
                             <h4>1. Khu vực &amp; Phí ship</h4>
-                            <p>Nội thành TP.HCM.</p>
-                            <p>Tính theo cước app giao hàng (Grab / Be / Xanh SM).</p>
+                            <p>Nội thành TP.HCM (Shop trực tiếp đi giao).</p>
+                            <p>Phí ship thanh toán trực tiếp khi nhận bánh.</p>
                         </div>
                     </div>
 
